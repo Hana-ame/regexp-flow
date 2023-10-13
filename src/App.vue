@@ -1,20 +1,61 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import Block from './components/Block.vue'
+
+
+import { ref, computed } from 'vue';
+// import { NInput, NCheckboxGroup, NSpace, NCheckbox, NButton } from 'naive-ui'
+import { NInput, NButton } from 'naive-ui'
+
+const inputText = ref("")
+
+// const regExp  = ref("")
+// const flags = ref<string[]>([])
+// const flag = computed(() => {
+//   return flags.value.join("")
+// })
+// const replacePattern = ref("")
+
+// const outputText = computed(() => {
+//   const reg = new RegExp(regExp.value, flag.value)
+//   const replaced = inputText.value.replace(reg, replacePattern.value)
+//   console.log(reg)
+//   return replaced  
+// })
+
+const pattern = ref<[string, string, string]>(["", "", ""])
+const outputText = ref("")
+
+function click(){
+  console.log(outputText.value)
+  console.log(pattern.value)
+}
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <n-input
+    style="width: 100%" 
+    v-model:value="inputText"
+    type="textarea"
+    placeholder="inputText"
+    :autosize="{
+      minRows: 3,
+      maxRows: 50,
+    }"
+  />
+  <n-button
+    @click="click"
+  >
+    click
+  </n-button>
+
+  <block
+    :input-text="inputText"
+    v-model:outputText="outputText"
+    v-model:pattern="pattern"
+  ></block>
 </template>
 
-<style scoped>
+<style>
 .logo {
   height: 6em;
   padding: 1.5em;
