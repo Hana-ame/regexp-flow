@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue';
+import { ref, computed } from 'vue';
 import { NInput, NCheckboxGroup, NSpace, NCheckbox } from 'naive-ui'
 
 // https://vuejs.org/guide/typescript/composition-api.html#typing-component-props
@@ -17,7 +17,7 @@ const emit = defineEmits([
 ])
 
 const regExp  = ref("")
-const flags = ref<string[]>([])
+const flags = ref<string[]>(props.pattern[1].split(''))
 // https://vuejs.org/guide/essentials/computed.html#computed-caching-vs-methods
 // https://vuejs.org/guide/essentials/computed.html#writable-computed
 const flag = computed(() => {

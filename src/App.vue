@@ -1,34 +1,33 @@
 <script setup lang="ts">
 import Block from './components/Block.vue'
+import { range } from './functions/function'
 
-
-import { ref, computed } from 'vue';
-// import { NInput, NCheckboxGroup, NSpace, NCheckbox, NButton } from 'naive-ui'
+import { ref } from 'vue';
 import { NInput, NButton } from 'naive-ui'
+
 
 const inputText = ref("")
 
-// const regExp  = ref("")
-// const flags = ref<string[]>([])
-// const flag = computed(() => {
-//   return flags.value.join("")
-// })
-// const replacePattern = ref("")
+const blockCnts = ref(1)
+const patterns = ref<[string, string, string][]>([["","",""]])
+const outputTexts = ref<string[]>([""])
 
-// const outputText = computed(() => {
-//   const reg = new RegExp(regExp.value, flag.value)
-//   const replaced = inputText.value.replace(reg, replacePattern.value)
-//   console.log(reg)
-//   return replaced  
-// })
+// function click(){
+//   console.log(outputTexts.value)
+//   console.log(patterns.value)
+// }
 
-const pattern = ref<[string, string, string]>(["", "", ""])
-const outputText = ref("")
-
-function click(){
-  console.log(outputText.value)
-  console.log(pattern.value)
+function addBlock(){
+  blockCnts.value += 1
+  patterns.value.push(["","",""])
+  outputTexts.value.push("")
 }
+function removeBlock(){
+  blockCnts.value -= 1
+  patterns.value.pop()
+  outputTexts.value.pop()
+}
+
 </script>
 
 <template>
@@ -42,17 +41,24 @@ function click(){
       maxRows: 50,
     }"
   />
+  <template v-for="i in range(blockCnts)" :key="i">
+    <block
+      :input-text="i==0 ? inputText : outputTexts[i-1]"
+      v-model:outputText="outputTexts[i]"
+      v-model:pattern="patterns[i]"
+    ></block>
+  </template>
+  
   <n-button
-    @click="click"
+    @click="addBlock"
   >
-    click
+    add one block
   </n-button>
-
-  <block
-    :input-text="inputText"
-    v-model:outputText="outputText"
-    v-model:pattern="pattern"
-  ></block>
+  <n-button
+    @click="removeBlock"
+  >
+    remove last block
+  </n-button>
 </template>
 
 <style>
