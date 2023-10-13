@@ -46,6 +46,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  text-align: left;
 }
 button:hover {
   border-color: #646cff;
@@ -64,6 +65,7 @@ button:focus-visible {
   margin: 0 auto;
   padding: 2rem;
   /* text-align: center; */
+  display: flex;
 }
 
 @media (prefers-color-scheme: light) {
