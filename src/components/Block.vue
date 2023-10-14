@@ -6,7 +6,7 @@ import { NInput, NCheckboxGroup, NSpace, NCheckbox } from 'naive-ui'
 const props = defineProps<{
   inputText: string,
   outputText: string,
-  pattern: [string, string, string],
+  // pattern: [string, string, string],
 }>()
 
 // https://vuejs.org/guide/components/events.html#events-validation
@@ -17,7 +17,8 @@ const emit = defineEmits([
 ])
 
 const regExp  = ref("")
-const flags = ref<string[]>(props.pattern[1].split(''))
+// const flags = ref<string[]>(props.pattern[1].split(''))
+const flags = ref<string[]>(['i','g'])
 // https://vuejs.org/guide/essentials/computed.html#computed-caching-vs-methods
 // https://vuejs.org/guide/essentials/computed.html#writable-computed
 const flag = computed(() => {
