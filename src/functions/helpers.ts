@@ -11,6 +11,15 @@ export function saveItem(key: string, obj:{n:number, patternArray:[string,string
 }
 
 export function loadItem(key: string) {
-  const obj:{n:number, patternArray:[string,string,string][]} = JSON.parse(localStorage.getItem(key));
+  if (!hasItem(key)) {
+    return { n: 1, patternArray: [['','','']] } as {n:number, patternArray:[string,string,string][]}
+  }
+  const obj : {n:number, patternArray:[string,string,string][]} = JSON.parse(localStorage.getItem(key)!)!;
   return obj
+}
+
+export type Pattern = {
+  regexp : string,
+  flags : string,
+  replacepattern : string,
 }

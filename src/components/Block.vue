@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import { NInput, NCheckboxGroup, NSpace, NCheckbox } from 'naive-ui'
 
 // https://vuejs.org/guide/typescript/composition-api.html#typing-component-props
@@ -16,19 +16,20 @@ const emit = defineEmits([
   'update:pattern',
 ])
 
-const regExp  = ref("")
-const flags = ref<string[]>(props.pattern[1].split(''))
+// const regExp  = ref("")
+// const flags = ref<string[]>(props.pattern[1].split(''))
+const flags = ref<string[]>(['i','g'])
 // https://vuejs.org/guide/essentials/computed.html#computed-caching-vs-methods
 // https://vuejs.org/guide/essentials/computed.html#writable-computed
 const flag = computed(() => {
   return flags.value.join("")
 })
-const replacePattern = ref("")
+// const replacePattern = ref("")
 
 const outputText = computed(() => {
-  const reg = new RegExp(regExp.value, flag.value)
-  const replaced = props.inputText.replace(reg, replacePattern.value)
-  const pattern: [string, string, string] = [regExp.value, flag.value, replacePattern.value]
+  const reg = new RegExp(props.pattern[0], flag.value)
+  const replaced = props.inputText.replace(reg, props.pattern[2])
+  const pattern: [string, string, string] = [props.pattern[0], flag.value, props.pattern[2]]
   console.log("replaced, pattern: ", replaced, pattern)
   // nextTick(()=>{    
     emit('update:outputText', replaced)
@@ -37,14 +38,18 @@ const outputText = computed(() => {
   return replaced  
 })
 
-
+// function update() {
+//   console.log('update', [regExp.value, flags.value.join(''), replacePattern.value])
+//   emit('update:pattern', [regExp.value, flags.value.join(''), replacePattern.value])
+// }
+// watch([regExp, flag, replacePattern], update)
 
 </script>
 
 <template>
   <n-input
     placeholder="regExp" 
-    v-model:value="regExp"
+    v-model:value="pattern[0]"
     autosize 
     style="width: 100%" 
   />
@@ -56,7 +61,7 @@ const outputText = computed(() => {
   </n-checkbox-group>
   <n-input 
     placeholder="replacePattern" 
-    v-model:value="replacePattern"
+    v-model:value="pattern[2]"
     autosize 
     style="width: 100%"
   />
