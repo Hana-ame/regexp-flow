@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import TestInput from './TestInput.vue';
 
-import { ref, computed } from 'vue';
-import { NInput, NCheckboxGroup, NSpace, NCheckbox } from 'naive-ui'
-
 const props = defineProps<{
   a : string,
 }>();

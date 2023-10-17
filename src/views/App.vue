@@ -73,14 +73,6 @@ function load(key: string){
   patterns.value = patternArray  
 }
 
-function updatePattern(i:number){
-  console.log(i)
-  return (regexp:string, flags:string, replacepattern:string,) => {
-    console.log( [ regexp, flags, replacepattern ] )
-    patterns.value[i] = [ regexp, flags, replacepattern ]
-    console.log( patterns.value )
-  }
-}
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed } from 'vue';
 import { NInput, NCheckboxGroup, NSpace, NCheckbox } from 'naive-ui'
 
 // https://vuejs.org/guide/typescript/composition-api.html#typing-component-props
