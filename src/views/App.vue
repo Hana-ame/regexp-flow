@@ -99,7 +99,7 @@ function loadKey(key: string){
         maxRows: 50,
       }"
     />
-    <template v-for="i in range(outputTexts.length)" :key="i">
+    <template v-for="i in range(flagsArr.length)" :key="i">
       <block
         :input-text="i==0 ? inputText : outputTexts[i-1]"
         v-model:outputText="outputTexts[i]"
