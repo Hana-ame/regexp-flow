@@ -31,10 +31,14 @@ const emit = defineEmits([
 // const replacePattern = ref("")
 
 const outputText = computed(() => {
-  const reg = new RegExp(props.regexp, props.flags.join(""))
-  const replaced = props.inputText.replace(reg, props.replacePattern)
-  emit('update:outputText', replaced)
-  return replaced  
+  try {
+    const reg = new RegExp(props.regexp, props.flags.join(""))
+    const replaced = props.inputText.replace(reg, props.replacePattern)
+    emit('update:outputText', replaced)
+    return replaced  
+  }catch (e) {
+    console.log(e)
+  }
 })
 
 /// function update() {
