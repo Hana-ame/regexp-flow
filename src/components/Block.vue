@@ -25,6 +25,7 @@ const flag = computed(() => {
   return flags.value.join("")
 })
 const replacePattern = ref("")
+// const pattern = 
 
 const outputText = computed(() => {
   const reg = new RegExp(regExp.value, flag.value)

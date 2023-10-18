@@ -2,7 +2,7 @@
 import Block from '@/components/Block.vue'
 import { range, hasItem, saveItem, loadItem } from '@/functions/helpers'
 
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { NInput, NButton } from 'naive-ui'
 
 
@@ -64,6 +64,13 @@ function load(key: string){
   blockCnts.value = n
   patterns.value = patternArray  
 }
+
+const test = ref("")
+watch(test, async (newValue:string) => {
+  const pattern = JSON.parse(newValue)  
+  console.log(pattern)
+  patterns.value[0] = pattern
+})
 </script>
 
 <template>
@@ -93,7 +100,7 @@ function load(key: string){
         minRows: 3,
         maxRows: 50,
       }"
-    />
+    ></n-input>
     <template v-for="i in range(blockCnts)" :key="i">
       <block
         :input-text="i==0 ? inputText : outputTexts[i-1]"
@@ -101,7 +108,6 @@ function load(key: string){
         @pattern="(newValue:[string,string,string]) => patterns[i] = newValue"
       ></block>
     </template>
-    
     <n-button
       @click="console.log(patterns)"
     >
