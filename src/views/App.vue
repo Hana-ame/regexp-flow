@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Block from '@/components/Block.vue'
-import { range, hasItem, saveItem, loadItem } from '@/functions/helpers'
+import { range, hasItem, saveItem, loadItem, getKeys, constructFlowData, constructPatternArray, removeItem, deconstructPattern } from '@/functions/helpers'
 
-import { nextTick, ref, watch } from 'vue';
+import { ref } from 'vue';
 import { NInput, NButton } from 'naive-ui'
 
 
@@ -10,32 +10,35 @@ const inputText = ref("")
 
 // blocks
 
-const blockCnts = ref(1)
-const patterns = ref<[string, string, string][]>([["","",""]])
+const regexpArr = ref<string[]>([""])
+const flagsArr = ref<string[][]>([['g','i']])
+const replacePatternArr = ref<string[]>([""])
 const outputTexts = ref<string[]>([""])
 
 function addBlock(){
-  blockCnts.value += 1
-  patterns.value.push(["","",""])
+  regexpArr.value.push("")
+  flagsArr.value.push(['g','i'])
+  replacePatternArr.value.push("")
   outputTexts.value.push("")
 }
 function removeBlock(){
-  blockCnts.value -= 1
-  patterns.value.pop()
+  regexpArr.value.pop()
+  flagsArr.value.pop()
+  replacePatternArr.value.pop()
   outputTexts.value.pop()
 }
-watch(patterns, () => {
-  console.log(patterns.value)
-})
+
 // keys
 
-const keys = ref<string[]>([])
+const keys = ref<string[]>(getKeys())
 const newKey = ref("")
 const addKeyStr = ref("save")
+
 function addKey(str: string){
   let key = newKey.value
   key = key.trim()
   if (key === "") return
+
   if (hasItem(key)) {
     if (str === "save") {
       addKeyStr.value = "overwrite?"
@@ -44,42 +47,35 @@ function addKey(str: string){
     }
     addKeyStr.value = "save"
   }
-  if (addKeyStr.value == "overwrite?"){
-    console.log(key)
-  } else {
-    keys.value.push(key)
-  }  
-  save(key)
+
+  saveKey(key)
+  keys.value = getKeys()
   newKey.value = ""
 }
-function removeKey(index: number){
-  console.log(index)
-  keys.value.splice(index, 1)
+function removeKey(key: string){
+  removeItem(key)
+  keys.value = getKeys()
 }
-function save(key: string){
+function saveKey(key: string){
   console.log('save')
-  const n = blockCnts.value
-  const patternArray = patterns.value
-  saveItem(key, { n, patternArray })
+  const pattern = constructPatternArray(regexpArr.value, flagsArr.value, replacePatternArr.value)
+  const flowData = constructFlowData(key, pattern)
+  saveItem(key, flowData)
 }
-function load(key: string){
-  const { n, patternArray } = loadItem(key)
-  console.log('load', n, patternArray)
-
-  blockCnts.value = 0
-  nextTick(() => {
-    blockCnts.value = n
-  })
-  patterns.value = patternArray  
+function loadKey(key: string){
+  console.log(key)
+  const dataFlow = loadItem(key)
+  if (dataFlow === null) return
+  [regexpArr.value, flagsArr.value, replacePatternArr.value] = deconstructPattern(dataFlow.patternArray)
 }
 
 </script>
 
 <template>
   <span style="width:20%; display: list-item; text-align: left;">
-    <div v-for="key,index in keys" :key="key">
-      <n-button style="width:70%; justify-content:left" @click="load(key)">{{ key }}</n-button>
-      <n-button style="width:30%;" @click="removeKey(index)"> delete </n-button>
+    <div v-for="key in keys" :key="key">
+      <n-button style="width:70%; justify-content:left" @click="loadKey(key)">{{ key }}</n-button>
+      <n-button style="width:30%;" @click="removeKey(key)"> delete </n-button>
     </div>
     <div>
       <n-input 
@@ -103,19 +99,15 @@ function load(key: string){
         maxRows: 50,
       }"
     />
-    <template v-for="i in range(patterns.length)" :key="i">
+    <template v-for="i in range(outputTexts.length)" :key="i">
       <block
         :input-text="i==0 ? inputText : outputTexts[i-1]"
         v-model:outputText="outputTexts[i]"
-        v-model:pattern="patterns[i]"
+        v-model:regexp="regexpArr[i]"
+        v-model:flags="flagsArr[i]"
+        v-model:replacePattern="replacePatternArr[i]"
       ></block>
     </template>
-    
-    <n-button
-      @click="console.log(patterns)"
-    >
-      test
-    </n-button>
 
     <n-button
       @click="addBlock"

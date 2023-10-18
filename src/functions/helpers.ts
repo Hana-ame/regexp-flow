@@ -1,25 +1,63 @@
+import { LocalStorageManager } from './localStorageManager';
+
+export const manager = new LocalStorageManager<FlowData>('flow')
+
+export type FlowData = {
+  key: string
+  patternArray: Pattern[]
+}
+
+export type Pattern = {
+  regexp: string
+  flags: string[]
+  replacePattern: string
+}
+
+export function getKeys(){
+  return manager.getKeys()
+}
+
+export function hasItem(key: string) {
+  return manager.getValue(key) !== null
+}
+
+export function saveItem(key: string, obj: FlowData) {
+  manager.putValue(key, obj);
+}
+
+export function loadItem(key: string) {
+  return manager.getValue(key)
+}
+
+export function removeItem(key: string) {
+  manager.removeItem(key)
+}
+
 export function range(n: number) {
   return Array.from(Array(n).keys());
 }
 
-export function hasItem(key: string) {
-  return localStorage.getItem(key) !== null
-}
-
-export function saveItem(key: string, obj:{n:number, patternArray:[string,string,string][]}) {
-  localStorage.setItem(key, JSON.stringify(obj));
-}
-
-export function loadItem(key: string) {
-  if (!hasItem(key)) {
-    return { n: 1, patternArray: [['','','']] } as {n:number, patternArray:[string,string,string][]}
+export function constructPatternArray( regexpArr: string[], flagsArr: string[][], replacePatternArr: string[] ) {
+  const n = regexpArr.length
+  const patternArray : Pattern[] = []
+  for (let i = 0; i < n; i++) {
+    patternArray.push({
+      regexp: regexpArr[i],
+      flags: flagsArr[i],
+      replacePattern: replacePatternArr[i],
+    })
   }
-  const obj : {n:number, patternArray:[string,string,string][]} = JSON.parse(localStorage.getItem(key)!)!;
-  return obj
+  return patternArray
 }
 
-export type Pattern = {
-  regexp : string,
-  flags : string,
-  replacepattern : string,
+export function constructFlowData( key: string, patternArray: Pattern[] ) {
+  const flowData: FlowData = {key, patternArray}
+  return flowData
+}
+
+export function deconstructPattern( pattern: Pattern[] ) {
+  const regexpArr: string[] = pattern.map(p => p.regexp)
+  const flagsArr: string[][] =  pattern.map(p => p.flags)
+  const replacePatternArr: string[] = pattern.map(p => p.replacePattern)
+  return [regexpArr , flagsArr , replacePatternArr] as [string[], string[][], string[]]
 }
